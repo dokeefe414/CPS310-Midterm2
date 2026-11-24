@@ -198,9 +198,11 @@ CPS310-Midterm2/
 ```
 
 **No oversized files are needed for this submission.** Generated
-`evidence/replayed/` files are intentionally ignored from ordinary
-commits to avoid churn; GitHub Actions uploads those **generated
-results** as downloadable artifacts of each successful CI run.
+`evidence/replayed/` files are ignored to avoid churn, and GitHub
+Actions uploads the original generated JSON and RDF traces.
+The **actual verified CI comparison JSON** and event-graph reconstructions
+derived from its recorded events are also permanently committed under
+[`evidence/verified_run_45322367482/`](evidence/verified_run_45322367482/).
 No full group game files, AI model weights, or proprietary service
 logs are required. If a run artifact expires, the exact command
 recreates the output.
