@@ -1,0 +1,10 @@
+Validation Report
+Conforms: False
+Results (1):
+Constraint Violation in LessThanOrEqualsConstraintComponent (http://www.w3.org/ns/shacl#LessThanOrEqualsConstraintComponent):
+	Severity: sh:Violation
+	Source Shape: [ sh:datatype xsd:integer ; sh:lessThanOrEquals zg:populationCapacity ; sh:maxCount Literal("1", datatype=xsd:integer) ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:minInclusive Literal("0", datatype=xsd:integer) ; sh:path zg:predictedCount ]
+	Focus Node: demo:forecast_tick_1_h3
+	Value Node: Literal("5", datatype=xsd:integer)
+	Result Path: zg:predictedCount
+	Message: Value of demo:forecast_tick_1_h3->zg:populationCapacity < Literal("5", datatype=xsd:integer)

@@ -1,0 +1,30 @@
+@prefix demo: <https://example.org/cps310/demo/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix zg: <https://example.org/cps310/zombie-ontology#> .
+
+demo:event_0 a zg:BiteEvent ;
+    zg:actor demo:Z0 ;
+    zg:target demo:H1 .
+
+demo:event_1 a zg:ConversionEvent ;
+    zg:createdZombie demo:Z_H1 ;
+    zg:sourceHuman demo:H1 .
+
+demo:forecast_tick_1_h3 a zg:Prediction ;
+    zg:computedBy demo:forecast_observer ;
+    zg:populationCapacity 3 ;
+    zg:predictedCount 5 .
+
+demo:snapshot_tick_1 a zg:PopulationSnapshot ;
+    zg:initialPopulation 3 ;
+    zg:survivingAgents 3 ;
+    zg:zombieCount 2 .
+
+demo:Z0 a zg:Zombie .
+
+demo:Z_H1 a zg:Zombie .
+
+demo:forecast_observer a zg:ForecastObserver .
+
+demo:H1 a zg:Human .
+

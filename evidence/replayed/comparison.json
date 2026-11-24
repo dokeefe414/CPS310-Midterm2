@@ -62,6 +62,41 @@
       }
     }
   },
+  "repair_v1": {
+    "checks": {
+      "G1_unique_conversion": true,
+      "G2_valid_event_roles": true,
+      "G3_bounded_population": true,
+      "G4_pure_bounded_forecast": false,
+      "G5_expected_scenario": true
+    },
+    "passes": 4,
+    "total_checks": 5,
+    "final": {
+      "humans": 1,
+      "zombies": 2,
+      "history": [
+        1,
+        2
+      ],
+      "forecast_h3": 5,
+      "events": [
+        {
+          "type": "BiteEvent",
+          "actor": "Z0",
+          "target": "H1"
+        },
+        {
+          "type": "ConversionEvent",
+          "source": "H1",
+          "created": "Z_H1"
+        }
+      ],
+      "remaining_human_health": {
+        "H2": 2
+      }
+    }
+  },
   "controlled": {
     "checks": {
       "G1_unique_conversion": true,
@@ -97,5 +132,19 @@
       }
     }
   },
-  "interpretation": "One illustrative paired demo, not statistically generalizable."
+  "shacl_validation": {
+    "naive": {
+      "conforms": false,
+      "violations": 4
+    },
+    "repair_v1": {
+      "conforms": false,
+      "violations": 1
+    },
+    "controlled": {
+      "conforms": true,
+      "violations": 0
+    }
+  },
+  "interpretation": "One reproducible AI-assisted failure/repair illustration; not an independent-sampling study of LLM outputs."
 }

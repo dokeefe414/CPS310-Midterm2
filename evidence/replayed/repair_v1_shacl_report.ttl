@@ -1,0 +1,20 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix zg: <https://example.org/cps310/zombie-ontology#> .
+
+[] a sh:ValidationReport ;
+    sh:conforms false ;
+    sh:result [ a sh:ValidationResult ;
+            sh:focusNode <https://example.org/cps310/demo/forecast_tick_1_h3> ;
+            sh:resultMessage "Value of demo:forecast_tick_1_h3->zg:populationCapacity < Literal(\"5\", datatype=xsd:integer)" ;
+            sh:resultPath zg:predictedCount ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:LessThanOrEqualsConstraintComponent ;
+            sh:sourceShape [ sh:datatype xsd:integer ;
+                    sh:lessThanOrEquals zg:populationCapacity ;
+                    sh:maxCount 1 ;
+                    sh:minCount 1 ;
+                    sh:minInclusive 0 ;
+                    sh:path zg:predictedCount ] ;
+            sh:value 5 ] .
+

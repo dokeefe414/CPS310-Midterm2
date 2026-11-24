@@ -1,0 +1,53 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix zg: <https://example.org/cps310/zombie-ontology#> .
+
+[] a sh:ValidationReport ;
+    sh:conforms false ;
+    sh:result [ a sh:ValidationResult ;
+            sh:focusNode <https://example.org/cps310/demo/snapshot_tick_1> ;
+            sh:resultMessage "Value of demo:snapshot_tick_1->zg:initialPopulation < Literal(\"4\", datatype=xsd:integer)" ;
+            sh:resultPath zg:survivingAgents ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:LessThanOrEqualsConstraintComponent ;
+            sh:sourceShape [ sh:datatype xsd:integer ;
+                    sh:lessThanOrEquals zg:initialPopulation ;
+                    sh:maxCount 1 ;
+                    sh:minCount 1 ;
+                    sh:minInclusive 0 ;
+                    sh:path zg:survivingAgents ] ;
+            sh:value 4 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode <https://example.org/cps310/demo/H1> ;
+            sh:resultMessage "A human can be converted at most once per demonstration tick." ;
+            sh:resultPath [ sh:inversePath zg:sourceHuman ] ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MaxCountConstraintComponent ;
+            sh:sourceShape [ sh:maxCount 1 ;
+                    sh:message "A human can be converted at most once per demonstration tick." ;
+                    sh:path [ sh:inversePath zg:sourceHuman ] ] ],
+        [ a sh:ValidationResult ;
+            sh:focusNode <https://example.org/cps310/demo/forecast_tick_1_h3> ;
+            sh:resultMessage "Value of demo:forecast_tick_1_h3->zg:populationCapacity < Literal(\"9\", datatype=xsd:integer)" ;
+            sh:resultPath zg:predictedCount ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:LessThanOrEqualsConstraintComponent ;
+            sh:sourceShape [ sh:datatype xsd:integer ;
+                    sh:lessThanOrEquals zg:populationCapacity ;
+                    sh:maxCount 1 ;
+                    sh:minCount 1 ;
+                    sh:minInclusive 0 ;
+                    sh:path zg:predictedCount ] ;
+            sh:value 9 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode <https://example.org/cps310/demo/event_2> ;
+            sh:resultMessage "Value does not have class zg:Zombie" ;
+            sh:resultPath zg:actor ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape [ sh:class zg:Zombie ;
+                    sh:maxCount 1 ;
+                    sh:minCount 1 ;
+                    sh:path zg:actor ] ;
+            sh:value <https://example.org/cps310/demo/H2> ] .
+
