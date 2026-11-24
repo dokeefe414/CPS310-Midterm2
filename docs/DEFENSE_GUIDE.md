@@ -192,10 +192,10 @@ not passed. The two candidates are evaluated on G1–G5 only.
 
 > The demonstration covers one small scenario and five
 > semantic checks; it does not formally verify the
-> entire game. The SHACL shapes aren't fully executed
-> by an external SHACL reasoner, and the prepackaged
-> reference candidates aren't a statistical experiment
-> across many LLM outputs.
+> entire game. The SHACL rules are validated on our one-tick RDF traces
+> using `pyshacl`, but that doesn't verify the whole game.
+> The prepackaged candidates aren't a statistical experiment
+> across independent AI model outputs.
 
 ## 6. How to explain the "rigorous argument" requirement
 
