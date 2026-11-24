@@ -27,12 +27,12 @@ This is a separate **process-control research/demo submission**.
 | --- | --- |
 | What are all the stages of the process pipeline, and why? | [Pipeline design and controlled development process](docs/PIPELINE_DESIGN.md) |
 | What is an ontology, what are the classes and relationships, and how is it enforced? | [Ontology design explained](docs/ONTOLOGY_GUIDE.md) |
-| What were the major AI prompts? | [Complete prompt templates and provenance](prompts/MAJOR_PROMPTS.md) |
+| What were the major AI prompts? | [Original prompt templates](prompts/MAJOR_PROMPTS.md) and [actual staged repair/provenance](prompts/REPAIR_CYCLE.md) |
 | What does the naive-versus-controlled demo test? | [Demonstration, evidence, and comparison](docs/DEMONSTRATION_AND_COMPARISON.md) |
 | How can I explain and defend this work? | [Professor defense guide](docs/DEFENSE_GUIDE.md) |
 | What exactly is the ontology? | [OWL/RDF Turtle](ontology/zombie_ontology.ttl), [SHACL constraints](ontology/shapes.ttl), [executable gate manifest](ontology/constraints.json) |
 | Where is the implementation? | [Pipeline code](tools/pipeline.py) and [unit tests](tests/test_pipeline.py) |
-| Where are the AI-assisted code candidates? | [Uncontrolled draft](demo/naive_candidate.py) and [ontology-controlled draft](demo/controlled_candidate.py) |
+| Where are the AI-assisted code candidates? | [Uncontrolled draft](demo/naive_candidate.py), [first repair](demo/repair_candidate_v1.py), and [final controlled draft](demo/controlled_candidate.py) |
 | Where are the recorded runs? | [GitHub Actions workflow](.github/workflows/ontology-validation.yml) — run artifacts contain comparison JSON and RDF traces |
 
 ## 3. Nine explicit pipeline stages
@@ -51,7 +51,7 @@ This is a separate **process-control research/demo submission**.
 
 This is a **human-in-the-loop AI development pipeline**. The AI-generated
 candidate is treated as untrusted until the verification gates accept it.
-The implemented controller runs with ordinary Python and `rdflib`; it
+The implemented controller runs with Python, `rdflib`, and `pyshacl`; it
 does not silently call an AI model or incur API charges.
 
 **Where the ontology controls the process:** the entities/relationships
@@ -73,13 +73,16 @@ py -m unittest discover -s tests -v
 py tools/pipeline.py
 ```
 
-The pipeline prints the number of passed gates for the two candidates and
+The pipeline prints the number of passed gates for all three candidate stages and
 writes fresh output to `evidence/replayed/`:
 
 ```text
-comparison.json         # exact boolean result for each check
-naive_trace.ttl         # machine-readable RDF events from naive draft
-controlled_trace.ttl    # machine-readable RDF events from controlled draft
+comparison.json            # G1-G5 for naive, repair_v1, controlled + SHACL verdicts
+naive_trace.ttl            # baseline RDF evidence
+repair_v1_trace.ttl        # intermediate repair RDF evidence
+controlled_trace.ttl       # final controlled RDF evidence
+*_shacl_report.ttl         # real SHACL machine-readable validation reports
+*_shacl_report.txt         # readable SHACL violation explanations
 ```
 
 To check the group code **without modifying it**, optional:
@@ -117,9 +120,28 @@ Five executable criteria, derived from the ontology, are applied equally:
 | **G6** | Optional **external** protection check of the original group learner; excluded from the standalone score unless supplied |
 
 The naive reference draft demonstrates the absence of these safeguards;
+the intermediate repair fixes event handling but retains an over-capacity forecast;
 the controlled draft implements duplicate suppression, type validation,
 population caps, and a pure forecasting function. These candidate modules
 are intentionally separate from the group's real code.
+
+### Executable ontology validation and a two-step repair demonstration
+
+The final update adds an actual **SHACL execution step** using `pyshacl`.
+The software generates RDF graphs containing BiteEvents, ConversionEvents,
+PopulationSnapshots, and Predictions; these are checked against
+`ontology/shapes.ttl`. A failure is recorded as a SHACL report and can
+block acceptance even when Python code executes without exceptions.
+Separately, the five original Python behavioral gates check role validity,
+event uniqueness, population conservation, forecast purity and exact state.
+
+The staged demonstration preserves all three AI-assisted source snapshots:
+**naive → repair_v1 → controlled**. The repair v1 snapshot deliberately leaves
+an over-capacity forecast, so the next step fixes a *measured remaining
+violation*, not just an imagined one. The [full repair task specifications,
+provenance, expected results and commands](prompts/REPAIR_CYCLE.md)
+are committed for your defense. The pipeline runs **deterministic
+validation**; it does not generate new LLM answers at runtime.
 
 ## 6. Expected demonstration behavior and limits
 
