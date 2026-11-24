@@ -222,9 +222,10 @@ Your argument should have four parts:
 - Look at the GitHub Actions run and its artifact, if CI ran.
 - Confirm the group game on `main` remains unchanged.
 - Explain that raw generated results are under
-  `evidence/replayed/` locally and may also be downloaded
-  from the CI run; they are not committed into the repo's
-  normal tracked source tree.
+  `evidence/replayed/` locally and downloadable from CI.
+  The verified comparison JSON and derived RDF trace snapshots
+  are also committed under
+  `evidence/verified_run_45322367482/`.
 - Be ready to discuss every check without relying on AI.
 
 ## 8. Final short summary
