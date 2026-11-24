@@ -1,0 +1,21 @@
+# Event-level RDF evidence reconstructed from the exact event array in
+# GitHub Actions run 45322367482 comparison.json.
+# The original serialized output is in the downloadable workflow artifact.
+@prefix zg: <https://example.org/cps310/zombie-ontology#> .
+@prefix demo: <https://example.org/cps310/demo/> .
+
+demo:event_0 a zg:BiteEvent ; zg:actor demo:Z0 ; zg:target demo:H1 .
+demo:Z0 a zg:Zombie .
+demo:H1 a zg:Human .
+
+demo:event_1 a zg:BiteEvent ; zg:actor demo:Z0 ; zg:target demo:H1 .
+
+demo:event_2 a zg:BiteEvent ; zg:actor demo:H2 ; zg:target demo:H2 .
+demo:H2 a zg:Human .
+
+demo:event_3 a zg:ConversionEvent ; zg:sourceHuman demo:H1 ; zg:createdZombie demo:Z_H1_1 .
+demo:Z_H1_1 a zg:Zombie .
+
+demo:event_4 a zg:ConversionEvent ; zg:sourceHuman demo:H1 ; zg:createdZombie demo:Z_H1_2 .
+demo:Z_H1_2 a zg:Zombie .
+
