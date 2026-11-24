@@ -127,10 +127,7 @@ are intentionally separate from the group's real code.
 
 For this deliberately selected test scenario, the controlled draft is
 designed to pass **5/5** executable candidate gates, whereas the naive
-draft exhibits all five violations (**0/5**). The command and the
-[automated tests](tests/test_pipeline.py) are the reproducible check for
-actual runtime results; GitHub Actions uploads the actual JSON and RDF
-event traces as an artifact.
+draft exhibits all five violations (**0/5**). The outcome has been **confirmed in [successful GitHub Actions run #10](https://github.com/dokeefe414/CPS310-Midterm2/actions/runs/45322367482)**: all five unit tests passed; the baseline scored 0/5 and the controlled draft 5/5. The actual CI comparison JSON is [archived in Git](evidence/verified_run_45322367482/comparison.json), with [event-trace evidence](evidence/README.md).
 
 **Do not misinterpret the comparison:** the naive and controlled
 reference implementations are small AI-assisted examples designed for
@@ -194,6 +191,10 @@ CPS310-Midterm2/
     test_pipeline.py
   evidence/
     README.md
+    verified_run_45322367482/
+      comparison.json
+      naive_trace.ttl
+      controlled_trace.ttl
 ```
 
 **No oversized files are needed for this submission.** Generated
