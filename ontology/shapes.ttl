@@ -2,9 +2,9 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# SHACL declarative constraints complement the executable Python gates.
-# The Python gate runner implements the duplicate-conversion and count bounds
-# explicitly; it does not claim to be a general SHACL interpreter.
+# Executed with pyshacl as a second, independent acceptance gate.
+# Each evidence graph represents a single demonstration tick, so inverse
+# sourceHuman maxCount implements one-conversion-per-human for that tick.
 
 zg:BiteShape a sh:NodeShape ;
     sh:targetClass zg:BiteEvent ;
@@ -56,6 +56,41 @@ zg:PredictionShape a sh:NodeShape ;
         sh:path zg:predictedCount ;
         sh:datatype xsd:integer ;
         sh:minInclusive 0 ;
+        sh:lessThanOrEquals zg:populationCapacity ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path zg:populationCapacity ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
+
+# The count snapshot includes the number of all surviving agents.
+zg:PopulationSnapshotShape a sh:NodeShape ;
+    sh:targetClass zg:PopulationSnapshot ;
+    sh:property [
+        sh:path zg:zombieCount ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:lessThanOrEquals zg:initialPopulation ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path zg:survivingAgents ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:lessThanOrEquals zg:initialPopulation ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path zg:initialPopulation ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
         sh:minCount 1 ;
         sh:maxCount 1
     ] .
