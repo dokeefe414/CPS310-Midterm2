@@ -1,0 +1,32 @@
+name: Ontology pipeline and demos
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out individual submission
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install required RDF parser
+        run: python -m pip install -r requirements.txt
+      - name: Run independent unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Run the controlled AI-development demo
+        run: python tools/pipeline.py --output-dir evidence/replayed
+      - name: Print saved comparison report
+        run: cat evidence/replayed/comparison.json
+      - name: Upload trace graphs and comparison as persistent run artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ontology-demo-evidence
+          path: evidence/replayed/
+          if-no-files-found: error
