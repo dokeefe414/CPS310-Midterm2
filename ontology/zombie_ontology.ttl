@@ -1,0 +1,38 @@
+@prefix zg: <https://example.org/cps310/zombie-ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# A small DOMAIN ONTOLOGY of the CPS 310 simulation.
+# This is a specification for the demonstration and process-control gates,
+# not a replacement for the production framework.
+
+zg:ZombieGameOntology a owl:Ontology ;
+  rdfs:comment "Ontology for controlling AI-generated Zombie Game features." .
+
+zg:Agent a owl:Class .
+zg:Human a owl:Class ; rdfs:subClassOf zg:Agent .
+zg:ArmedHuman a owl:Class ; rdfs:subClassOf zg:Human .
+zg:Zombie a owl:Class ; rdfs:subClassOf zg:Agent .
+zg:Simulation a owl:Class .
+zg:Event a owl:Class .
+zg:BiteEvent a owl:Class ; rdfs:subClassOf zg:Event .
+zg:ConversionEvent a owl:Class ; rdfs:subClassOf zg:Event .
+zg:PopulationSnapshot a owl:Class .
+zg:Prediction a owl:Class .
+zg:Policy a owl:Class .
+zg:SwarmPolicy a owl:Class ; rdfs:subClassOf zg:Policy .
+zg:ForecastObserver a owl:Class .
+zg:PolicyDecision a owl:Class .
+
+zg:actor a owl:ObjectProperty ; rdfs:domain zg:BiteEvent ; rdfs:range zg:Zombie .
+zg:target a owl:ObjectProperty ; rdfs:domain zg:BiteEvent ; rdfs:range zg:Human .
+zg:sourceHuman a owl:ObjectProperty ; rdfs:domain zg:ConversionEvent ; rdfs:range zg:Human .
+zg:createdZombie a owl:ObjectProperty ; rdfs:domain zg:ConversionEvent ; rdfs:range zg:Zombie .
+zg:computedBy a owl:ObjectProperty ; rdfs:domain zg:Prediction ; rdfs:range zg:ForecastObserver .
+zg:chosenBy a owl:ObjectProperty ; rdfs:domain zg:PolicyDecision ; rdfs:range zg:SwarmPolicy .
+zg:zombieCount a owl:DatatypeProperty ; rdfs:domain zg:PopulationSnapshot ; rdfs:range xsd:integer .
+zg:initialPopulation a owl:DatatypeProperty ; rdfs:domain zg:PopulationSnapshot ; rdfs:range xsd:integer .
+zg:predictedCount a owl:DatatypeProperty ; rdfs:domain zg:Prediction ; rdfs:range xsd:integer .
+zg:tick a owl:DatatypeProperty ; rdfs:range xsd:integer .
