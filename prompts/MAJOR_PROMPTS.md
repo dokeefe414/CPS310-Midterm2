@@ -287,3 +287,15 @@ and [defense guide](../docs/DEFENSE_GUIDE.md).
 the prompt specifications allow deterministic review of the
 control mechanism, but do not constitute independent model-generation
 transcripts. Keep that distinction in your defense.
+
+
+## P7–P10 — Final documented AI-assisted repair cycle
+
+The [complete follow-up instructions and source-level evidence](REPAIR_CYCLE.md)
+cover: R0 (analyze baseline failure), R1 (repair event roles and conversion
+uniqueness), R2 (repair forecast bounds while preserving purity), and R3
+(run actual SHACL validation and capture RDF reports). These provide explicit
+full prompt text, artifact links and honest provenance. The first two
+reference drafts were AI-assisted prepackaged examples rather than an
+independent sampling experiment; the final pipeline executes deterministically
+without an LLM API.
