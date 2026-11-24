@@ -160,8 +160,9 @@ keep an audit trail and rerun every gate.
 plain OWL classes and ranges. In particular, "unique per tick" is a
 closed-world temporal constraint. We give it a SHACL-style shape for
 the *single-tick trace* and enforce it in deterministic Python.
-The repository does **not** implement a full OWL reasoner or general
-SHACL validation engine.
+The updated repository runs the SHACL Core constraints on each RDF trace
+using `pyshacl`; it still does **not** implement full OWL theorem proving,
+or a complete specification of every possible game behavior.
 
 ## IV. Why these controls work
 
