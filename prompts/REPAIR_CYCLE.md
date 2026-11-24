@@ -187,3 +187,16 @@ a language model; the pipeline does not autonomously call GPT-6
 during `py tools/pipeline.py`. Automated generation through
 an external LLM API and unbiased multi-trial testing would be
 separate future extensions.
+
+## Results confirmed by GitHub Actions
+
+The final implementation was run in
+[GitHub Actions run #27](https://github.com/dokeefe414/CPS310-Midterm2/actions/runs/45450883812)
+on November 24, 2026. Eight unit tests passed. The actual generated
+comparison is preserved at
+[`evidence/verified_run_45450883812/comparison.json`](../evidence/verified_run_45450883812/comparison.json).
+
+The reported trajectory is **0/5 → 4/5 → 5/5** for the
+Python gates, while real SHACL validation reported **4 → 1 → 0**
+violations. This demonstrates the specific error-correction path
+without claiming it is an independent randomized LLM trial.
