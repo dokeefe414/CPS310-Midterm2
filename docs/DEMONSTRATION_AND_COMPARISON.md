@@ -247,3 +247,27 @@ and raw response, import each candidate into a common test harness,
 and report gate pass rates across attempts. Keep model settings
 and the comparison methodology matched. This is **future work**,
 not a claim about the current submission.
+
+
+## 10. Additional November 24 demonstration: real SHACL and intermediate repair
+
+The final revision retains a third [intermediate
+candidate](../demo/repair_candidate_v1.py). It validates event actors,
+prevents repeated conversion, and preserves the correct final population,
+but **still makes an over-capacity forecast**. The final source
+[`controlled_candidate.py`](../demo/controlled_candidate.py) adds
+the forecast cap and retains the successful event constraints. The same
+deterministic G1–G5 checks assess all three, and the RDF evidence is also
+validated with **`pyshacl`**.
+
+| Stage | Python acceptance gates | SHACL expectation |
+| --- | --- | --- |
+| Naive | 0/5 | Does not conform: invalid actor, double conversion and invalid bounds |
+| Repair v1 | 4/5 | Does not conform: forecast exceeds capacity |
+| Controlled | 5/5 | Conforms to the scoped, one-tick RDF constraints |
+
+The actual CI result (rather than merely expected values) should be read from
+`comparison.json` in the latest GitHub Actions run. The pipeline also writes
+`*_shacl_report.ttl` and `*_shacl_report.txt`, so you can show *which*
+constraints triggered. Read [the complete corrective prompts, intermediate
+source and review logic](../prompts/REPAIR_CYCLE.md).
