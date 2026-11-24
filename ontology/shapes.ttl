@@ -1,0 +1,61 @@
+@prefix zg: <https://example.org/cps310/zombie-ontology#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# SHACL declarative constraints complement the executable Python gates.
+# The Python gate runner implements the duplicate-conversion and count bounds
+# explicitly; it does not claim to be a general SHACL interpreter.
+
+zg:BiteShape a sh:NodeShape ;
+    sh:targetClass zg:BiteEvent ;
+    sh:property [
+        sh:path zg:actor ;
+        sh:class zg:Zombie ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path zg:target ;
+        sh:class zg:Human ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
+
+zg:ConversionShape a sh:NodeShape ;
+    sh:targetClass zg:ConversionEvent ;
+    sh:property [
+        sh:path zg:sourceHuman ;
+        sh:class zg:Human ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path zg:createdZombie ;
+        sh:class zg:Zombie ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
+
+zg:HumanConvertedAtMostOnceShape a sh:NodeShape ;
+    sh:targetClass zg:Human ;
+    sh:property [
+        sh:path [ sh:inversePath zg:sourceHuman ] ;
+        sh:maxCount 1 ;
+        sh:message "A human can be converted at most once per demonstration tick."
+    ] .
+
+zg:PredictionShape a sh:NodeShape ;
+    sh:targetClass zg:Prediction ;
+    sh:property [
+        sh:path zg:computedBy ;
+        sh:class zg:ForecastObserver ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path zg:predictedCount ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
