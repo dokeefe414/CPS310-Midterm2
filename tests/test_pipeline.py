@@ -6,7 +6,7 @@ import unittest
 
 from rdflib import Graph, RDF
 from tools import pipeline
-from demo import controlled_candidate, naive_candidate
+from demo import controlled_candidate, naive_candidate, repair_candidate_v1
 
 
 class OntologyPipelineTests(unittest.TestCase):
@@ -53,6 +53,44 @@ class OntologyPipelineTests(unittest.TestCase):
                 Path(tmp) / "controlled_trace.ttl", format="turtle"
             )
             self.assertGreater(len(naive_graph), len(fixed_graph))
+
+    def test_intermediate_repair_has_one_remaining_forecast_violation(self):
+        result = pipeline.run_case(repair_candidate_v1)
+        self.assertEqual(result["passes"], 4)
+        self.assertEqual(result["total_checks"], 5)
+        self.assertFalse(result["checks"]["G4_pure_bounded_forecast"])
+        self.assertTrue(all(v for k, v in result["checks"].items()
+                            if k != "G4_pure_bounded_forecast"))
+
+    def test_real_shacl_accepts_controlled_and_rejects_bad_traces(self):
+        for name, candidate, expected in (
+            ("naive", naive_candidate, False),
+            ("repair_v1", repair_candidate_v1, False),
+            ("controlled", controlled_candidate, True),
+        ):
+            with self.subTest(candidate=name):
+                result = pipeline.run_case(candidate)
+                graph = pipeline.event_graph(result["final"]["events"],
+                                             final=result["final"])
+                verdict, report_graph, message = pipeline.validate_event_graph(graph)
+                self.assertEqual(verdict["conforms"], expected, message)
+                self.assertEqual(verdict["violations"] == 0, expected)
+                self.assertGreater(len(report_graph), 0)
+
+    def test_shacl_catches_bounded_forecast_and_duplicate_conversion(self):
+        naive = pipeline.run_case(naive_candidate)
+        fixed = pipeline.run_case(controlled_candidate)
+        naive_graph = pipeline.event_graph(naive["final"]["events"],
+                                           final=naive["final"])
+        controlled_graph = pipeline.event_graph(fixed["final"]["events"],
+                                               final=fixed["final"])
+        first, _, first_message = pipeline.validate_event_graph(naive_graph)
+        second, _, _ = pipeline.validate_event_graph(controlled_graph)
+        self.assertFalse(first["conforms"])
+        self.assertTrue(second["conforms"])
+        self.assertGreaterEqual(first["violations"], 3)
+        self.assertIn("sourceHuman", first_message)
+        self.assertIn("predictedCount", first_message)
 
     def test_optional_external_audit_cannot_silently_claim_success(self):
         status = pipeline.production_gate(None)
