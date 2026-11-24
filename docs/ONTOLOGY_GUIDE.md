@@ -91,10 +91,9 @@ The conversion shape requires one `sourceHuman` and one
 the number of incoming `sourceHuman` references in the
 **single-tick demonstration graph**.
 
-The repo's pipeline **parses and checks the presence of these
-shapes** but it does **not** run a complete SHACL engine. This is
-an explicit limitation. The relevant violations are actually
-detected by the Python contract checks explained next.
+The pipeline now **executes SHACL validation with `pyshacl`** on each
+candidate's event, snapshot and prediction graph. It also runs independent
+Python gates for behavior SHACL cannot inspect, such as forecast state mutation.
 
 If someone later combines events across multiple ticks, the
 single-trace uniqueness rule must be scoped by tick: one human
@@ -203,3 +202,22 @@ this deliberately scoped midterm demonstration.
   `run_case()`, and `event_graph()`.
 - [Comparison guide](DEMONSTRATION_AND_COMPARISON.md): the exact
   same test scenario and outputs for both implementations.
+
+
+## 9. Executed SHACL validation (final submission update)
+
+The revised `shapes.ttl` includes a `PopulationSnapshotShape` with
+`sh:lessThanOrEquals` to compare surviving-agent count to initial capacity.
+The `PredictionShape` also requires a bounded integer prediction and a
+reference to a typed `ForecastObserver`. Original event and conversion
+shapes remain.
+
+`pyshacl.validate(..., inference="none")` executes those constraints on
+each actual candidate's **RDF evidence graph**. Inference is disabled
+so a human appearing as an invalid bite actor isn't incorrectly
+inferred to be a zombie merely from the RDF property range.
+
+Each run writes readable and machine-readable SHACL violation reports.
+The separate Python checks still enforce properties RDF cannot inspect,
+such as whether a forecast call mutates the game. See the
+[iterative repair prompts and artifacts](../prompts/REPAIR_CYCLE.md).

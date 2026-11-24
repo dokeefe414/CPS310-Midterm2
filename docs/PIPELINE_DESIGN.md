@@ -160,8 +160,9 @@ keep an audit trail and rerun every gate.
 plain OWL classes and ranges. In particular, "unique per tick" is a
 closed-world temporal constraint. We give it a SHACL-style shape for
 the *single-tick trace* and enforce it in deterministic Python.
-The repository does **not** implement a full OWL reasoner or general
-SHACL validation engine.
+The updated repository runs the SHACL Core constraints on each RDF trace
+using `pyshacl`; it still does **not** implement full OWL theorem proving,
+or a complete specification of every possible game behavior.
 
 ## IV. Why these controls work
 
@@ -225,7 +226,7 @@ five executable candidate checks, optional group-repo integrity audit,
 RDF trace export, comparison JSON, Python regression tests, automated
 GitHub Actions workflow, full prompts and defense documentation.
 
-**Not implemented or claimed:** Automated LLM API calls, full SHACL engine,
+**Not implemented or claimed:** Automated LLM API calls, a general OWL reasoner,
 formal verification of the complete multiplayer group game, unbiased
 multi-model A/B trials, statistical significance, full-scale concurrent
 event processing, or integrated deployment of this mini-game.
@@ -247,3 +248,21 @@ The ontology-controlled response instead is:
 6. Record the new trace and code commit.
 
 This creates a closed **specify → generate → verify → repair** loop.
+
+
+## VIII. November 24 final enhancement: executable SHACL and staged repair
+
+The ontology constraints are now also enforced by **`pyshacl`** on the RDF
+traces of all three preserved candidates. The checker validates BiteEvent
+actor/target types, one ConversionEvent per source human in a single tick,
+count snapshots not exceeding initial capacity, and predicted counts not
+exceeding capacity. The separate Python gates still check semantic properties
+such as observer purity and expected end state.
+
+The documented feedback cycle is **naive candidate (0/5) → repair v1
+(4/5) → controlled candidate (5/5)**. Version one repairs event handling but
+retains an over-capacity forecast so the final step demonstrates a genuine
+remaining violation. See [the exact replayable repair instructions and
+source-level artifacts](../prompts/REPAIR_CYCLE.md). CI executes a real
+SHACL validator and saves both Turtle graphs and individual validation
+reports. Each stage retains failures instead of concealing them.

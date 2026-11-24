@@ -36,3 +36,7 @@ zg:zombieCount a owl:DatatypeProperty ; rdfs:domain zg:PopulationSnapshot ; rdfs
 zg:initialPopulation a owl:DatatypeProperty ; rdfs:domain zg:PopulationSnapshot ; rdfs:range xsd:integer .
 zg:predictedCount a owl:DatatypeProperty ; rdfs:domain zg:Prediction ; rdfs:range xsd:integer .
 zg:tick a owl:DatatypeProperty ; rdfs:range xsd:integer .
+
+# Additional closed-world validation fields used in the demo evidence graph.
+zg:survivingAgents a owl:DatatypeProperty ; rdfs:domain zg:PopulationSnapshot ; rdfs:range xsd:integer .
+zg:populationCapacity a owl:DatatypeProperty ; rdfs:domain zg:Prediction ; rdfs:range xsd:integer .

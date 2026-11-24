@@ -60,3 +60,25 @@ a measured pass rate over independent AI generations.
 if the original repository is cloned as a sibling directory.
 Without that input the external audit status is `not_checked`,
 not silently passed.
+
+## Latest CI evidence — November 24, 2026
+
+[Successful GitHub Actions run #27](https://github.com/dokeefe414/CPS310-Midterm2/actions/runs/45450883812)
+executed **eight passing unit tests**, producing results for **three**
+preserved implementation stages:
+
+| Version | Python gate pass count | `pyshacl` verdict | Violations |
+| --- | --- | --- | --- |
+| `naive` | 0/5 | nonconformant | 4 |
+| `repair_v1` | 4/5 | nonconformant | 1 |
+| `controlled` | 5/5 | conformant | 0 |
+
+The actual job-produced comparison has been committed at
+[`verified_run_45450883812/comparison.json`](verified_run_45450883812/comparison.json).
+GitHub Actions stores the three actual event graphs, three SHACL RDF reports,
+three readable validation reports and JSON comparison in the
+`ontology-demo-evidence` downloadable artifact.
+
+These files are generated from executed software, not hand-authored
+pass/fail examples. `evidence/replayed/` is regenerated when you
+run `py tools/pipeline.py`.

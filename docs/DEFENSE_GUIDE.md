@@ -192,10 +192,10 @@ not passed. The two candidates are evaluated on G1–G5 only.
 
 > The demonstration covers one small scenario and five
 > semantic checks; it does not formally verify the
-> entire game. The SHACL shapes aren't fully executed
-> by an external SHACL reasoner, and the prepackaged
-> reference candidates aren't a statistical experiment
-> across many LLM outputs.
+> entire game. The SHACL rules are validated on our one-tick RDF traces
+> using `pyshacl`, but that doesn't verify the whole game.
+> The prepackaged candidates aren't a statistical experiment
+> across independent AI model outputs.
 
 ## 6. How to explain the "rigorous argument" requirement
 
@@ -237,3 +237,20 @@ Your argument should have four parts:
 > violates the domain rules. A controlled comparison and
 > machine-readable evidence show exactly which problems
 > those controls identify.
+
+
+## 9. Last-minute additional demo
+
+Show `prompts/REPAIR_CYCLE.md` and all three source files:
+`naive_candidate.py`, `repair_candidate_v1.py`, and
+`controlled_candidate.py`. The first repair addresses wrong actor
+types and repeated human conversions; the second repair caps the
+long-horizon forecast. Open `comparison.json` and
+`repair_v1_shacl_report.txt` to show **real** constraint
+violations, not merely a file containing SHACL declarations.
+
+State clearly: the code candidates and corrections are AI-assisted,
+but replaying the pipeline uses deterministic Python and
+`pyshacl`, **not a live LLM API**. The three candidates are a
+reproducible demonstration, not a statistical study of many independent
+model outputs.
