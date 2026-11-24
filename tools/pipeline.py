@@ -5,9 +5,9 @@ Run from repository root:
   py tools/pipeline.py --output-dir evidence/local-run
   py tools/pipeline.py --group-repo ..\\CPS310-Zombie-Game
 
-Only Python's standard library and rdflib are required. The code parses RDF
-ontology and SHACL declarations; Python evaluates the documented subset of
-constraints as executable gates. It is NOT a complete SHACL implementation.
+Uses rdflib and pyshacl to validate RDF event traces against SHACL shapes,
+plus separate executable Python acceptance gates for non-RDF properties such
+as forecast purity. Does not invoke any AI API at runtime.
 """
 from __future__ import annotations
 
@@ -18,7 +18,8 @@ import json
 from pathlib import Path
 import sys
 
-from rdflib import Graph, Namespace, RDF, RDFS, OWL
+from rdflib import Graph, Namespace, RDF, RDFS, OWL, XSD, Literal
+from pyshacl import validate as shacl_validate
 
 BASE = Path(__file__).resolve().parents[1]
 ZG = Namespace("https://example.org/cps310/zombie-ontology#")
@@ -26,7 +27,7 @@ SH = Namespace("http://www.w3.org/ns/shacl#")
 EXPECTED_MODELS_BLOB = "2c4f7e0fd9af67647e9f4d48a25199d405664031"
 
 sys.path.insert(0, str(BASE))
-from demo import naive_candidate, controlled_candidate  # noqa: E402
+from demo import naive_candidate, controlled_candidate, repair_candidate_v1  # noqa: E402
 
 
 def git_blob_sha(data: bytes) -> str:
@@ -54,7 +55,7 @@ def ontology_gate() -> list[str]:
         if (ZG[rel], RDFS.range, ZG[range_]) not in ontology:
             failures.append(f"Incorrect range {rel}")
     for shape in ("BiteShape", "ConversionShape", "HumanConvertedAtMostOnceShape",
-                  "PredictionShape"):
+                  "PredictionShape", "PopulationSnapshotShape"):
         if (ZG[shape], RDF.type, SH.NodeShape) not in shapes:
             failures.append(f"Missing SHACL shape {shape}")
     return failures
@@ -144,8 +145,12 @@ def run_case(candidate):
     }
 
 
-def event_graph(events):
-    """Construct an RDF evidence graph using ontology-defined event roles."""
+def event_graph(events, final=None):
+    """Construct an RDF graph of the trace and observed final snapshot.
+
+    The concrete data graph includes explicit types; SHACL checks these facts
+    without applying RDFS/OWL inference that could mask bad actor roles.
+    """
     graph = Graph()
     graph.bind("zg", ZG)
     inst = Namespace("https://example.org/cps310/demo/")
@@ -167,7 +172,36 @@ def event_graph(events):
             graph.add((z, RDF.type, ZG.Zombie))
             graph.add((subject, ZG.sourceHuman, h))
             graph.add((subject, ZG.createdZombie, z))
+    if final is not None:
+        snapshot = inst["snapshot_tick_1"]
+        graph.add((snapshot, RDF.type, ZG.PopulationSnapshot))
+        graph.add((snapshot, ZG.zombieCount, Literal(final["zombies"], datatype=XSD.integer)))
+        graph.add((snapshot, ZG.survivingAgents, Literal(
+            final["humans"] + final["zombies"], datatype=XSD.integer)))
+        # The demo has a fixed initial population of H1, H2, and Z0.
+        graph.add((snapshot, ZG.initialPopulation, Literal(3, datatype=XSD.integer)))
+        observer = inst["forecast_observer"]
+        prediction = inst["forecast_tick_1_h3"]
+        graph.add((observer, RDF.type, ZG.ForecastObserver))
+        graph.add((prediction, RDF.type, ZG.Prediction))
+        graph.add((prediction, ZG.computedBy, observer))
+        graph.add((prediction, ZG.predictedCount, Literal(
+            int(final["forecast_h3"]), datatype=XSD.integer)))
+        graph.add((prediction, ZG.populationCapacity, Literal(3, datatype=XSD.integer)))
     return graph
+
+
+def validate_event_graph(graph):
+    """Run a real SHACL validator and expose checkable violation counts."""
+    shapes = Graph().parse(BASE / "ontology/shapes.ttl", format="turtle")
+    conforms, validation_graph, message = shacl_validate(
+        data_graph=graph, shacl_graph=shapes, inference="none",
+        abort_on_first=False, allow_infos=False, allow_warnings=False,
+    )
+    violations = sum(
+        1 for _ in validation_graph.subjects(RDF.type, SH.ValidationResult)
+    )
+    return {"conforms": bool(conforms), "violations": violations}, validation_graph, str(message)
 
 
 def main(argv=None):
@@ -181,36 +215,54 @@ def main(argv=None):
     ontology_issues = ontology_gate()
     group_repo = Path(args.group_repo).resolve() if args.group_repo else None
     production_audit = production_gate(group_repo)
-    naive = run_case(naive_candidate)
-    controlled = run_case(controlled_candidate)
+    cases = {
+        "naive": run_case(naive_candidate),
+        "repair_v1": run_case(repair_candidate_v1),
+        "controlled": run_case(controlled_candidate),
+    }
+    shacl_checks = {}
+    for name, result in cases.items():
+        graph = event_graph(result["final"]["events"], final=result["final"])
+        graph.serialize(destination=str(destination / f"{name}_trace.ttl"),
+                        format="turtle")
+        verdict, report_graph, message = validate_event_graph(graph)
+        shacl_checks[name] = verdict
+        report_graph.serialize(destination=str(destination / f"{name}_shacl_report.ttl"),
+                               format="turtle")
+        (destination / f"{name}_shacl_report.txt").write_text(
+            message, encoding="utf-8"
+        )
     report = {
         "submission": "Daniel O'Keefe - CPS 310 Midterm #2",
         "scenario": "two duplicate Z0->H1 bites plus invalid H2->H2 bite in one tick",
         "ontology_gate": {"pass": not ontology_issues, "issues": ontology_issues},
         "production_gate": production_audit,
-        "naive": naive,
-        "controlled": controlled,
-        "interpretation": "One illustrative paired demo, not statistically generalizable.",
+        **cases,
+        "shacl_validation": shacl_checks,
+        "interpretation": (
+            "One reproducible AI-assisted failure/repair illustration; "
+            "not an independent-sampling study of LLM outputs."
+        ),
     }
     (destination / "comparison.json").write_text(
         json.dumps(report, indent=2) + "\n", encoding="utf-8"
     )
-    event_graph(naive["final"]["events"]).serialize(
-        destination=str(destination / "naive_trace.ttl"), format="turtle"
-    )
-    event_graph(controlled["final"]["events"]).serialize(
-        destination=str(destination / "controlled_trace.ttl"), format="turtle"
-    )
     print(json.dumps({
         "ontology_ok": not ontology_issues,
         "production_audit": production_audit["status"],
-        "naive": f'{naive["passes"]}/{naive["total_checks"]}',
-        "controlled": f'{controlled["passes"]}/{controlled["total_checks"]}',
+        "naive": f'{cases["naive"]["passes"]}/{cases["naive"]["total_checks"]}',
+        "repair_v1": f'{cases["repair_v1"]["passes"]}/{cases["repair_v1"]["total_checks"]}',
+        "controlled": f'{cases["controlled"]["passes"]}/{cases["controlled"]["total_checks"]}',
+        "shacl": shacl_checks,
         "out": str(destination),
     }, indent=2))
-    return 0 if not ontology_issues and production_audit["status"] != "failed" and all(
-        controlled["checks"].values()
-    ) else 1
+    expected = (cases["naive"]["passes"] == 0
+                and cases["repair_v1"]["passes"] == 4
+                and cases["controlled"]["passes"] == 5
+                and not shacl_checks["naive"]["conforms"]
+                and not shacl_checks["repair_v1"]["conforms"]
+                and shacl_checks["controlled"]["conforms"])
+    return 0 if not ontology_issues and production_audit["status"] != "failed" and expected else 1
 
 
 if __name__ == "__main__":
