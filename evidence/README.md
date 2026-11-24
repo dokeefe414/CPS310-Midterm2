@@ -30,6 +30,19 @@ evidence/replayed/controlled_trace.ttl
 - **controlled_trace.ttl:** the event graph where H1 is converted
   once and only valid zombie bite events are accepted.
 
+**Verified run:** [GitHub Actions run #10](https://github.com/dokeefe414/CPS310-Midterm2/actions/runs/45322367482)
+passed all five unit tests and recorded **0/5** naive vs **5/5**
+ontology-controlled acceptance gates.
+
+The actual `comparison.json` from the CI job logs has been committed at
+[`verified_run_45322367482/comparison.json`](verified_run_45322367482/comparison.json).
+The committed [naive](verified_run_45322367482/naive_trace.ttl) and
+[controlled](verified_run_45322367482/controlled_trace.ttl)
+Turtle traces are **reconstructed from the exact events in that verified
+JSON report**, not byte-for-byte copies of the original `rdflib`
+serialization. The original three runtime-generated files were uploaded
+unmodified as the GitHub Actions artifact `ontology-demo-evidence`.
+
 The `evidence/replayed` directory is intentionally Git-ignored to avoid
 check-in churn. The
 [GitHub Actions workflow](../.github/workflows/ontology-validation.yml)
