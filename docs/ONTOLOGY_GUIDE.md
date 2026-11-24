@@ -91,10 +91,9 @@ The conversion shape requires one `sourceHuman` and one
 the number of incoming `sourceHuman` references in the
 **single-tick demonstration graph**.
 
-The repo's pipeline **parses and checks the presence of these
-shapes** but it does **not** run a complete SHACL engine. This is
-an explicit limitation. The relevant violations are actually
-detected by the Python contract checks explained next.
+The pipeline now **executes SHACL validation with `pyshacl`** on each
+candidate's event, snapshot and prediction graph. It also runs independent
+Python gates for behavior SHACL cannot inspect, such as forecast state mutation.
 
 If someone later combines events across multiple ticks, the
 single-trace uniqueness rule must be scoped by tick: one human
