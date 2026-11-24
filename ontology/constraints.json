@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "author": "Daniel O'Keefe",
+  "project": "CPS 310 Midterm #2: Ontology-Controlled AI Development",
+  "ontology_uri": "https://example.org/cps310/zombie-ontology#",
+  "required_classes": [
+    "Agent", "Human", "ArmedHuman", "Zombie", "Simulation", "Event",
+    "BiteEvent", "ConversionEvent", "PopulationSnapshot", "Prediction",
+    "Policy", "SwarmPolicy", "ForecastObserver", "PolicyDecision"
+  ],
+  "required_subclasses": {
+    "Human": "Agent",
+    "ArmedHuman": "Human",
+    "Zombie": "Agent",
+    "BiteEvent": "Event",
+    "ConversionEvent": "Event",
+    "SwarmPolicy": "Policy"
+  },
+  "required_relations": {
+    "actor": ["BiteEvent", "Zombie"],
+    "target": ["BiteEvent", "Human"],
+    "sourceHuman": ["ConversionEvent", "Human"],
+    "createdZombie": ["ConversionEvent", "Zombie"],
+    "computedBy": ["Prediction", "ForecastObserver"],
+    "chosenBy": ["PolicyDecision", "SwarmPolicy"]
+  },
+  "acceptance_gates": [
+    {
+      "id": "G1",
+      "name": "One human cannot convert twice in a tick",
+      "predicate": "unique_conversion",
+      "source": "ConversionEvent.sourceHuman functional-per-tick"
+    },
+    {
+      "id": "G2",
+      "name": "Valid actor and target types",
+      "predicate": "valid_event_roles",
+      "source": "BiteEvent.actor=Zombie; BiteEvent.target=Human"
+    },
+    {
+      "id": "G3",
+      "name": "Population cannot exceed starting population",
+      "predicate": "bounded_population",
+      "source": "PopulationSnapshot.zombieCount <= initialPopulation"
+    },
+    {
+      "id": "G4",
+      "name": "Forecast is observation-only and bounded",
+      "predicate": "pure_forecast",
+      "source": "Prediction.computedBy=ForecastObserver"
+    },
+    {
+      "id": "G5",
+      "name": "Deterministic expected outcome for two simultaneous bites",
+      "predicate": "expected_case",
+      "source": "Human H1 begins with 1 HP; two hits in same tick -> 1 conversion"
+    },
+    {
+      "id": "G6",
+      "name": "Existing production swarm learner stays intact",
+      "predicate": "protected_production",
+      "source": "Owen's models.py exact baseline Git blob SHA and default Thompson path"
+    }
+  ]
+}
