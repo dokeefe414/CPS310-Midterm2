@@ -1,6 +1,7 @@
 # CPS 310 Midterm #2 — Ontology-Controlled AI Development Pipeline
 
 Daniel O'Keefe
+
 Tuesday, November 24, 2026  
 
 ## 1. Purpose and scope
