@@ -1,8 +1,9 @@
 """Executable ontology gates and reproducible naive/controlled comparison.
 
 Run from repository root:
-  py submissions/Daniel_OKeefe_Midterm2/tools/pipeline.py
-  py submissions/Daniel_OKeefe_Midterm2/tools/pipeline.py --output-dir /tmp/demo
+  py tools/pipeline.py
+  py tools/pipeline.py --output-dir evidence/local-run
+  py tools/pipeline.py --group-repo ..\\CPS310-Zombie-Game
 
 Only Python's standard library and rdflib are required. The code parses RDF
 ontology and SHACL declarations; Python evaluates the documented subset of
@@ -17,7 +18,7 @@ import json
 from pathlib import Path
 import sys
 
-from rdflib import Graph, Namespace, RDF, RDFS, OWL, URIRef
+from rdflib import Graph, Namespace, RDF, RDFS, OWL
 
 BASE = Path(__file__).resolve().parents[1]
 ZG = Namespace("https://example.org/cps310/zombie-ontology#")
