@@ -119,10 +119,12 @@ computes the following independent boolean outcomes:
 | **G5** | Exact final scenario matches specification | FAIL | PASS |
 | **Total** | Per-candidate gates | **0 / 5 expected** | **5 / 5 expected** |
 
-These are **expected reference-case outcomes derived from the
-candidate source**; the actual run report is generated and
-uploaded by the CI workflow and can be independently reproduced
-using the exact commands below.
+These outcomes were **verified by GitHub Actions run #10**:
+[View passing tests and evidence artifact](https://github.com/dokeefe414/CPS310-Midterm2/actions/runs/45322367482).
+The **actual CI-produced JSON report** is permanently archived at
+[\`evidence/verified_run_45322367482/comparison.json\`](../evidence/verified_run_45322367482/comparison.json).
+Both candidates were tested with the same fixed input, and the job uploaded
+the original generated RDF traces as downloadable artifacts.
 
 An additional **G6** audits the external group game's original
 Thompson Sampling file *only when the group's local path is supplied*.
@@ -154,8 +156,8 @@ evidence/replayed/
     controlled_trace.ttl
 ```
 
-These reports are generated at runtime; they are not fake
-prewritten evidence. The
+These reports are generated at runtime; they are not manually invented
+prewritten results. A verified archival snapshot is also checked into Git. The
 [GitHub Actions workflow](../.github/workflows/ontology-validation.yml)
 also runs the tests and the pipeline automatically and uploads
 these files as an artifact named `ontology-demo-evidence`.
