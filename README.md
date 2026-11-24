@@ -238,3 +238,28 @@ gates and CI evidence are what demonstrate the code's behavior.
 
 **Student responsible for understanding, reviewing, and defending this
 submission: Daniel O'Keefe.**
+
+## Final verified result — November 24, 2026
+
+The final [CI validation run](https://github.com/dokeefe414/CPS310-Midterm2/actions/runs/45450883812)
+completed **8/8 automated tests successfully**, installed and executed
+`pyshacl`, and uploaded the RDF traces, readable SHACL reports, and
+the machine-readable `comparison.json` as an Actions artifact.
+
+| Candidate checkpoint | Python acceptance gates | SHACL conformant? | SHACL violation count |
+| --- | --- | --- | --- |
+| Original naive draft | **0/5** | No | **4** |
+| Event-repair version 1 | **4/5** | No | **1** |
+| Final controlled draft | **5/5** | **Yes** | **0** |
+
+The real generated `comparison.json` from the CI job is permanently
+archived at [`evidence/verified_run_45450883812/comparison.json`](evidence/verified_run_45450883812/comparison.json).
+The [workflow artifact](https://github.com/dokeefe414/CPS310-Midterm2/actions/runs/45450883812)
+contains all generated RDF traces and SHACL validation reports.
+
+This is a reproducible demonstration of the controls on one specified
+scenario. It does **not** prove universal AI-generation accuracy or
+automatically invoke an AI model at pipeline runtime. All project files
+and prompt specifications are in this individual repository.
+
+Before submitting, consult [the final rubric checklist](docs/FINAL_SUBMISSION_AUDIT.md).
