@@ -1,0 +1,17 @@
+@prefix demo: <https://example.org/cps310/demo/> .
+@prefix zg: <https://example.org/cps310/zombie-ontology#> .
+
+demo:event_0 a zg:BiteEvent ;
+    zg:actor demo:Z0 ;
+    zg:target demo:H1 .
+
+demo:event_1 a zg:ConversionEvent ;
+    zg:createdZombie demo:Z_H1 ;
+    zg:sourceHuman demo:H1 .
+
+demo:Z0 a zg:Zombie .
+
+demo:Z_H1 a zg:Zombie .
+
+demo:H1 a zg:Human .
+

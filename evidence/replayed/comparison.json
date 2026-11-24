@@ -1,0 +1,101 @@
+{
+  "submission": "Daniel O'Keefe - CPS 310 Midterm #2",
+  "scenario": "two duplicate Z0->H1 bites plus invalid H2->H2 bite in one tick",
+  "ontology_gate": {
+    "pass": true,
+    "issues": []
+  },
+  "production_gate": {
+    "status": "not_checked",
+    "pass": null,
+    "issues": [
+      "Supply --group-repo PATH to verify the group repo; not required for the standalone demo."
+    ]
+  },
+  "naive": {
+    "checks": {
+      "G1_unique_conversion": false,
+      "G2_valid_event_roles": false,
+      "G3_bounded_population": false,
+      "G4_pure_bounded_forecast": false,
+      "G5_expected_scenario": false
+    },
+    "passes": 0,
+    "total_checks": 5,
+    "final": {
+      "humans": 1,
+      "zombies": 3,
+      "history": [
+        1,
+        3
+      ],
+      "forecast_h3": 9,
+      "events": [
+        {
+          "type": "BiteEvent",
+          "actor": "Z0",
+          "target": "H1"
+        },
+        {
+          "type": "BiteEvent",
+          "actor": "Z0",
+          "target": "H1"
+        },
+        {
+          "type": "BiteEvent",
+          "actor": "H2",
+          "target": "H2"
+        },
+        {
+          "type": "ConversionEvent",
+          "source": "H1",
+          "created": "Z_H1_1"
+        },
+        {
+          "type": "ConversionEvent",
+          "source": "H1",
+          "created": "Z_H1_2"
+        }
+      ],
+      "remaining_human_health": {
+        "H2": 1
+      }
+    }
+  },
+  "controlled": {
+    "checks": {
+      "G1_unique_conversion": true,
+      "G2_valid_event_roles": true,
+      "G3_bounded_population": true,
+      "G4_pure_bounded_forecast": true,
+      "G5_expected_scenario": true
+    },
+    "passes": 5,
+    "total_checks": 5,
+    "final": {
+      "humans": 1,
+      "zombies": 2,
+      "history": [
+        1,
+        2
+      ],
+      "forecast_h3": 3,
+      "events": [
+        {
+          "type": "BiteEvent",
+          "actor": "Z0",
+          "target": "H1"
+        },
+        {
+          "type": "ConversionEvent",
+          "source": "H1",
+          "created": "Z_H1"
+        }
+      ],
+      "remaining_human_health": {
+        "H2": 2
+      }
+    }
+  },
+  "interpretation": "One illustrative paired demo, not statistically generalizable."
+}
