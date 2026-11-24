@@ -1,10 +1,8 @@
 # CPS 310 Midterm #2 — Ontology-Controlled AI Development Pipeline
 
-**Student:** Daniel O'Keefe  
-**Course:** CPS 310, Fall 2026  
-**Instructor:** Fanchao  
-**Due:** Tuesday, November 24, 2026, 11:59 PM EST  
-**Submission type:** **Individual work**, in a separate repository from the group's Zombie Game.
+Daniel O'Keefe
+CPS 310, Fall 2026  
+Tuesday, November 24, 2026, 11:59 PM EST  
 
 ## 1. Purpose and scope
 
